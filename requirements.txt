@@ -1,0 +1,13 @@
+psycopg2
+pandas
+numpy
+python-dotenv
+pymango
+certifi
+pymongo[srv]
+dill
+scikit-lean
+pyaml
+mlflow
+#-e .
+
