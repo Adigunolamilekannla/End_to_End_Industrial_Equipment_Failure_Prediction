@@ -1,0 +1,11 @@
+COLUMNS:
+  footfall: int
+  tempMode: int
+  AQ:       int
+  USS:      int
+  CS:       int
+  VOC:      int
+  RP:       int
+  IP:       int
+  Temperature:   int
+  fail:     int

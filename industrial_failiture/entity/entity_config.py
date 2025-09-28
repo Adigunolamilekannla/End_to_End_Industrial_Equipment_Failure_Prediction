@@ -28,6 +28,14 @@ class DataInjectionConfig:
         )
 
 
- 
-
+class DataValidationConfig:
+    def __init__(self,training_pipeline_config:TrainPipelineConfig):
+        self.validate_dir_name:str = os.path.join(training_pipeline_config.artifact_dir,constants.DATA_VALIDATION_DIR)
+        self.valid_data_path:str = os.path.join(self.validate_dir_name,constants.VALID_DATA_PATH,constants.VALID_DATA_FILE_NAME)
+        self.invalid_data_path:str = os.path.join(self.validate_dir_name,constants.INVALID_DATA_PATH,constants.INVALID_DATA_FILE_NAME)
+        self.drift_report_file_path:str = os.path.join(
+            self.validate_dir_name,
+            constants.DATA_VALIDATION_DRIFT_REPORT_DIR,
+            constants.DATA_VALIDATION_DRIFT_REPORT_DIR_FILE_NAME
+        )
 
