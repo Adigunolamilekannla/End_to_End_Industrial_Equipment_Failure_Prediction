@@ -48,7 +48,7 @@ class DataValidation:
         except Exception as e:
             raise IndustralFailitureException(e, sys)
 
-    def detect_dataset_drift(self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold=0.05) -> bool:
+    def detect_dataset_drift(self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold=0.6) -> bool:
         """Check dataset drift between base and current dataset"""
         try:
             logging.info("Starting dataset drift detection...")

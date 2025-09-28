@@ -12,3 +12,9 @@ class DataValidationArtifacts:
     invalid_data_file_path:str
     drift_report_file_path:str
     drift_status: bool
+
+@dataclass
+class DataTranformationArtifacts:
+    training_file_path:str
+    testing_file_path:str
+

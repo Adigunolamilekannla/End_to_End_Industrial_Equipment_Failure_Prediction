@@ -56,7 +56,11 @@ DATA_VALIDATION_DRIFT_REPORT_DIR_FILE_NAME:str = "report.yaml"
 
 
 """
-Defining common constant for data validation
+Defining common constant for data trainsfformation
 """
+
+DATA_TRANSFORMATION_DIR:str = "transformed_data"
+TRAIN_DATA_DIR:str = "training_data" 
+TEST_DATA_DIR:str = "testing_data" 
 
 
