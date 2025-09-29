@@ -48,3 +48,7 @@ class DataTransformationConfig:
         self.data_file_path:str =   os.path.join(
            training_pipeline_config.artifact_name,constants.DATA_INGECTION_INGESTED_DIR,constants.DATA_INGECTION_FUTURE_STORAGE_DIR,constants.FILE_NAME
         )
+
+class ModelTrainerConfig:
+    def __init__(self,training_pipeline_config:TrainPipelineConfig):
+        self.trained_model_dir:str  = os.path.join(training_pipeline_config.artifact_dir,constants.MODEL_TRAINER_DIR,constants.TRAINED_MODEL_FILE_NAME)

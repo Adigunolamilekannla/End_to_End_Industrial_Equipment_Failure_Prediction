@@ -27,8 +27,7 @@ FILE_NAME: str = "data.csv"
 TRAINING_FILE_NAME = "train.csv"
 TESTING_FILE_NAME = "test.csv"
 SCHEMA_FILE_PATH =  "schema/schema.yaml"
-PREPROCESSING_OBJECT_FILE_NAME:str = "preprocessing.pkl"
-TRAINED_MODEL_FILE_NAME:str = "model.pkl"
+
 
 
 
@@ -62,5 +61,23 @@ Defining common constant for data trainsfformation
 DATA_TRANSFORMATION_DIR:str = "transformed_data"
 TRAIN_DATA_DIR:str = "training_data" 
 TEST_DATA_DIR:str = "testing_data" 
+
+
+"""
+Defining common constant for model training
+"""
+
+MODEL_TRAINER_DIR:str = "trained_model"
+TRAINED_MODEL_FILE_NAME:str = "model.pkl"
+
+
+PARAM_GRID = {
+    "n_estimators": [100, 200, 300, 500],         # number of trees
+    "max_depth": [None, 10, 20, 30, 50],          # depth of trees
+    "min_samples_split": [2, 5, 10],              # minimum samples to split a node
+    "min_samples_leaf": [1, 2, 4],                # minimum samples in a leaf node
+    "max_features": ["auto", "sqrt", "log2"],     # number of features considered at each split
+    "bootstrap": [True, False]                    # whether bootstrap samples are used
+}
 
 
