@@ -10,7 +10,7 @@ from industrial_failiture.logging.logger import logging
 
 
 # --- Initialize configs ---
-train_pipeline_config = TrainPipelineConfig(timestamp="09_30_2025_11_41_06")
+train_pipeline_config = TrainPipelineConfig()
 model_training_config = ModelTrainerConfig(
     training_pipeline_config=train_pipeline_config
 )

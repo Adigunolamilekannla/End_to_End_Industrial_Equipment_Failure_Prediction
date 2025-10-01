@@ -9,7 +9,6 @@ class TrainPipelineConfig:
         # If no timestamp is provided, create one once
         if timestamp is None:
             timestamp = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-
         self.pipeline_name = constants.PIPELINE_NAME
         self.artifact_name = constants.ARTIFACTS_NAME
         self.artifact_dir = os.path.join(self.artifact_name, timestamp)
@@ -78,8 +77,5 @@ class DataTransformationConfig:
 
 class ModelTrainerConfig:
     def __init__(self, training_pipeline_config: TrainPipelineConfig):
-        self.trained_model_dir: str = os.path.join(
-            training_pipeline_config.artifact_dir,
-            constants.MODEL_TRAINER_DIR,
-            constants.TRAINED_MODEL_FILE_NAME,
-        )
+        self.trained_model_dir: str = training_pipeline_config.model_dir
+        
