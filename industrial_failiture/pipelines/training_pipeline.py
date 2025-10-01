@@ -3,7 +3,7 @@ from industrial_failiture.entity.entity_config import (
     DataValidationConfig,
     DataTransformationConfig,
     ModelTrainerConfig,
-    TrainPipelineConfig
+    TrainPipelineConfig,
 )
 from industrial_failiture.components.data_ingestion import DataIngestion
 from industrial_failiture.components.data_validation import DataValidation
@@ -42,7 +42,7 @@ class TrainingPipeline:
             data_validation_config = DataValidationConfig(self.train_pipeline_config)
             data_validation = DataValidation(
                 data_validation_config=data_validation_config,
-                data_ingestion_artifacts=data_ingestion_artifacts
+                data_ingestion_artifacts=data_ingestion_artifacts,
             )
             data_validation_artifacts = data_validation.initiate_data_validation()
             logging.info("Data validation completed successfully.")
@@ -53,12 +53,16 @@ class TrainingPipeline:
     def start_data_transformation(self, data_validation_artifacts):
         try:
             logging.info("Starting data transformation...")
-            data_transformation_config = DataTransformationConfig(self.train_pipeline_config)
+            data_transformation_config = DataTransformationConfig(
+                self.train_pipeline_config
+            )
             data_transformation = DataTransformation(
                 data_validation_artifacts=data_validation_artifacts,
-                data_transformation_config=data_transformation_config
+                data_transformation_config=data_transformation_config,
             )
-            data_transformation_artifacts = data_transformation.initiate_data_transformation()
+            data_transformation_artifacts = (
+                data_transformation.initiate_data_transformation()
+            )
             logging.info("Data transformation completed successfully.")
             return data_transformation_artifacts
         except Exception as e:
@@ -70,20 +74,20 @@ class TrainingPipeline:
             model_trainer_config = ModelTrainerConfig(self.train_pipeline_config)
             model_trainer = ModelTrainer(
                 data_transformation_artifacts=data_transformation_artifacts,
-                model_trainer_config=model_trainer_config
+                model_trainer_config=model_trainer_config,
             )
             model_trainer_artifacts = model_trainer.initiate_model_trainer()
             logging.info("Model training completed successfully.")
             return model_trainer_artifacts
         except Exception as e:
             raise IndustralFailitureException(e, sys)
-        
+
     def sync_artifacts_dir_to_s3(self):
         try:
             aws_bucket_url = f"s3://{TRAINING_BUCKET_NAME}/artifacts/{self.train_pipeline_config.timestamp}"
             self.s3_sync.sync_folder_to_s3(
                 folder=self.train_pipeline_config.artifact_dir,
-                aws_bucket_url=aws_bucket_url
+                aws_bucket_url=aws_bucket_url,
             )
             logging.info(f"Artifacts synced to S3 bucket: {aws_bucket_url}")
         except Exception as e:
@@ -93,8 +97,12 @@ class TrainingPipeline:
         try:
             logging.info("Pipeline execution started.")
             data_ingestion_artifacts = self.start_data_ingestion()
-            data_validation_artifacts = self.start_data_validation(data_ingestion_artifacts)
-            data_transformation_artifacts = self.start_data_transformation(data_validation_artifacts)
+            data_validation_artifacts = self.start_data_validation(
+                data_ingestion_artifacts
+            )
+            data_transformation_artifacts = self.start_data_transformation(
+                data_validation_artifacts
+            )
             self.start_model_trainer(data_transformation_artifacts)
             logging.info("Pipeline execution completed successfully.")
 
@@ -108,4 +116,3 @@ class TrainingPipeline:
 if __name__ == "__main__":
     pipeline = TrainingPipeline()
     pipeline.run_pipeline()
-

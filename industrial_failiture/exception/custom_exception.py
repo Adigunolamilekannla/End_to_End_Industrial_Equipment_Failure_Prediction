@@ -1,5 +1,5 @@
 import sys
-from  industrial_failiture.logging.logger import logging
+from industrial_failiture.logging.logger import logging
 
 
 class IndustralFailitureException(Exception):

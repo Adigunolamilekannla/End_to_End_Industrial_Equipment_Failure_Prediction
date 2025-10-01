@@ -1,7 +1,10 @@
 from industrial_failiture.logging.logger import logging
 from industrial_failiture.exception.custom_exception import IndustralFailitureException
 from industrial_failiture.utils.main_utils import read_yaml, write_yaml
-from industrial_failiture.entity.entity_artifacts import DataValidationArtifacts, DataIngestionArtifacts
+from industrial_failiture.entity.entity_artifacts import (
+    DataValidationArtifacts,
+    DataIngestionArtifacts,
+)
 from industrial_failiture.entity.entity_config import DataValidationConfig
 from industrial_failiture import constants
 import os, sys
@@ -10,8 +13,11 @@ import pandas as pd
 
 
 class DataValidation:
-    def __init__(self, data_validation_config: DataValidationConfig,
-                 data_ingestion_artifacts: DataIngestionArtifacts):
+    def __init__(
+        self,
+        data_validation_config: DataValidationConfig,
+        data_ingestion_artifacts: DataIngestionArtifacts,
+    ):
         try:
             logging.info("Initializing DataValidation component...")
             self.data_ingestion_artifacts = data_ingestion_artifacts
@@ -38,7 +44,9 @@ class DataValidation:
             required_columns = len(self.schema_config["COLUMNS"].keys())
             print(required_columns)
             print(len(dataframe.columns))
-            logging.info(f"Validating number of columns. Expected: {required_columns}, Found: {len(dataframe.columns)}")
+            logging.info(
+                f"Validating number of columns. Expected: {required_columns}, Found: {len(dataframe.columns)}"
+            )
             if len(dataframe.columns) == required_columns:
                 logging.info("✅ Number of columns validation passed.")
                 return True
@@ -48,7 +56,9 @@ class DataValidation:
         except Exception as e:
             raise IndustralFailitureException(e, sys)
 
-    def detect_dataset_drift(self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold=0.6) -> bool:
+    def detect_dataset_drift(
+        self, base_df: pd.DataFrame, current_df: pd.DataFrame, threshold=0.6
+    ) -> bool:
         """Check dataset drift between base and current dataset"""
         try:
             logging.info("Starting dataset drift detection...")
@@ -65,13 +75,17 @@ class DataValidation:
                 drift_detected = p_value < threshold
                 if drift_detected:
                     status = False
-                    logging.warning(f"Drift detected in column '{column}' with p-value={p_value:.5f}")
+                    logging.warning(
+                        f"Drift detected in column '{column}' with p-value={p_value:.5f}"
+                    )
                 else:
-                    logging.info(f"No drift in column '{column}' (p-value={p_value:.5f})")
+                    logging.info(
+                        f"No drift in column '{column}' (p-value={p_value:.5f})"
+                    )
 
                 report[column] = {
                     "p_value": float(p_value),
-                    "drift_detected": drift_detected
+                    "drift_detected": drift_detected,
                 }
 
             # Save drift report
@@ -96,15 +110,24 @@ class DataValidation:
             # 2. Validate column count
             data_status = self.validate_number_of_columns(data)
             if not data_status:
-                raise IndustralFailitureException("Training dataframe has column mismatch", sys)
+                raise IndustralFailitureException(
+                    "Training dataframe has column mismatch", sys
+                )
 
             # 3. Drift detection (for now comparing dataset with itself)
             drift_status = self.detect_dataset_drift(data, data)
 
             # 4. Save validated data
-            os.makedirs(os.path.dirname(self.data_validation_config.valid_data_path), exist_ok=True)
-            data.to_csv(self.data_validation_config.valid_data_path, index=False, header=True)
-            logging.info(f"Validated data saved at: {self.data_validation_config.valid_data_path}")
+            os.makedirs(
+                os.path.dirname(self.data_validation_config.valid_data_path),
+                exist_ok=True,
+            )
+            data.to_csv(
+                self.data_validation_config.valid_data_path, index=False, header=True
+            )
+            logging.info(
+                f"Validated data saved at: {self.data_validation_config.valid_data_path}"
+            )
 
             # 5. Create artifacts
             data_validation_artifacts = DataValidationArtifacts(
@@ -112,7 +135,7 @@ class DataValidation:
                 valid_data_file_path=self.data_validation_config.valid_data_path,
                 invalid_data_file_path=self.data_validation_config.invalid_data_path,
                 drift_report_file_path=self.data_validation_config.drift_report_file_path,
-                drift_status=drift_status
+                drift_status=drift_status,
             )
 
             logging.info("✅ Data Validation completed successfully.")

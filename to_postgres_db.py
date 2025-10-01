@@ -4,7 +4,6 @@ from industrial_failiture.exception.custom_exception import IndustralFailitureEx
 from industrial_failiture import constants
 
 
-
 # AWS PostgreSQL credentials
 host = constants.POSTGRES_DATABASE_URL
 port = constants.PORT
@@ -14,11 +13,7 @@ user = constants.USER
 try:
     # Connect to AWS PostgreSQL
     conn = psycopg2.connect(
-        host=host,
-        dbname=database,
-        user=user,
-        password=constants.PASSWORD,
-        port=port
+        host=host, dbname=database, user=user, password=constants.PASSWORD, port=port
     )
     cur = conn.cursor()
 

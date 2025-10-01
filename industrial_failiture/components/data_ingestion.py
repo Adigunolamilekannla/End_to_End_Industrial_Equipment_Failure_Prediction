@@ -34,7 +34,7 @@ class DataIngestion:
                 user=user,
                 password=password,
                 port=port,
-                sslmode="require"  # ensures SSL connection
+                sslmode="require",  # ensures SSL connection
             ) as conn:
                 query = "SELECT * FROM industrial_failure;"
                 df = pd.read_sql(query, conn)

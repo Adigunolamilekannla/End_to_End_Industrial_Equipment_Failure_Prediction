@@ -29,7 +29,7 @@ def get_classification_score(y_true, y_pred, average="weighted") -> dict:
         classification_metric = {
             "f1_score": model_f1_score,
             "precision_score": model_precision_score,
-            "recall_score": model_recall_score
+            "recall_score": model_recall_score,
         }
 
         logging.info("Classification metrics calculation completed successfully.")

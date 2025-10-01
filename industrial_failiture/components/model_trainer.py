@@ -14,16 +14,21 @@ import pandas as pd
 
 
 class ModelTrainer:
-    def __init__(self, data_transformation_artifacts: DataTranformationArtifacts,
-                 model_trainer_config: ModelTrainerConfig):
+    def __init__(
+        self,
+        data_transformation_artifacts: DataTranformationArtifacts,
+        model_trainer_config: ModelTrainerConfig,
+    ):
         try:
             logging.info("Initializing ModelTrainer component...")
             self.data_transformation_artifacts = data_transformation_artifacts
             self.model_trainer_config = model_trainer_config
         except Exception as e:
             raise IndustralFailitureException(e, sys)
-        
-    def mlflow_tracking(self, model_name, model, train_metrics, test_metrics, register_model=True):
+
+    def mlflow_tracking(
+        self, model_name, model, train_metrics, test_metrics, register_model=True
+    ):
         """Logs model, parameters, and metrics to MLflow"""
         try:
             logging.info(f"Starting MLflow tracking for {model_name}")
@@ -34,7 +39,7 @@ class ModelTrainer:
                 mlflow.sklearn.log_model(
                     sk_model=model,
                     artifact_path="model",
-                    registered_model_name=model_name if register_model else None
+                    registered_model_name=model_name if register_model else None,
                 )
 
                 # Log parameters
@@ -62,7 +67,7 @@ class ModelTrainer:
             logging.info("Loading training and testing data...")
             train_data = pd.read_csv(train_data_file_path)
             test_data = pd.read_csv(test_data_file_path)
-            
+
             X_train, y_train = train_data.drop("fail", axis=1), train_data["fail"]
             X_test, y_test = test_data.drop("fail", axis=1), test_data["fail"]
 
@@ -82,27 +87,36 @@ class ModelTrainer:
             y_test_pred = best_model.predict(X_test)
 
             # Metrics
-            y_train_metric = get_classification_score(y_true=y_train, y_pred=y_train_pred)
+            y_train_metric = get_classification_score(
+                y_true=y_train, y_pred=y_train_pred
+            )
             y_test_metric = get_classification_score(y_true=y_test, y_pred=y_test_pred)
 
             # MLflow logging
-            self.mlflow_tracking("RandomForest", best_model, y_train_metric, y_test_metric)
+            self.mlflow_tracking(
+                "RandomForest", best_model, y_train_metric, y_test_metric
+            )
 
             # Save model
-            os.makedirs(os.path.dirname(self.model_trainer_config.trained_model_dir), exist_ok=True)
+            os.makedirs(
+                os.path.dirname(self.model_trainer_config.trained_model_dir),
+                exist_ok=True,
+            )
             save_object(self.model_trainer_config.trained_model_dir, best_model)
-            logging.info(f"Best model saved at {self.model_trainer_config.trained_model_dir}")
+            logging.info(
+                f"Best model saved at {self.model_trainer_config.trained_model_dir}"
+            )
 
         except Exception as e:
             raise IndustralFailitureException(e, sys)
-        
+
     def initiate_model_trainer(self):
         try:
             logging.info("Initiating model training pipeline...")
             self.train_model(
                 self.data_transformation_artifacts.training_file_path,
-                self.data_transformation_artifacts.testing_file_path
+                self.data_transformation_artifacts.testing_file_path,
             )
             logging.info("Model training pipeline completed successfully ✅")
         except Exception as e:
-            raise IndustralFailitureException(e,sys)
+            raise IndustralFailitureException(e, sys)
