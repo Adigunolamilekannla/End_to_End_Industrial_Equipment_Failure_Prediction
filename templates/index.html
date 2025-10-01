@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Industrial Failure Prediction</title>
+</head>
+<body>
+    <h2>Predict Failure</h2>
+    <form action="/predict_form" method="POST">
+        <label>Footfall:</label><input type="number" name="footfall" step="any" required><br>
+        <label>Temp Mode:</label><input type="number" name="tempMode" step="any" required><br>
+        <label>AQ:</label><input type="number" name="AQ" step="any" required><br>
+        <label>USS:</label><input type="number" name="USS" step="any" required><br>
+        <label>CS:</label><input type="number" name="CS" step="any" required><br>
+        <label>VOC:</label><input type="number" name="VOC" step="any" required><br>
+        <label>RP:</label><input type="number" name="RP" step="any" required><br>
+        <label>IP:</label><input type="number" name="IP" step="any" required><br>
+        <label>Temperature:</label><input type="number" name="Temperature" step="any" required><br><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction is defined %}
+        <h3>Prediction: {{ prediction }}</h3>
+    {% endif %}
+    {% if error is defined %}
+        <h3 style="color:red;">Error: {{ error }}</h3>
+    {% endif %}
+
+    <br><a href="/train_model">Train Model</a>
+</body>
+</html>

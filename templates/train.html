@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Training Result</title>
+</head>
+<body>
+    <h2>Model Training</h2>
+    {% if accuracy is defined %}
+        <p>✅ Model trained successfully</p>
+        <p>Accuracy: {{ accuracy }}</p>
+    {% endif %}
+
+    {% if error is defined %}
+        <p style="color:red;">❌ Error: {{ error }}</p>
+    {% endif %}
+
+    <br><a href="/">Back to Home</a>
+</body>
+</html>

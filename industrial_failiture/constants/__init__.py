@@ -81,3 +81,5 @@ PARAM_GRID = {
 }
 
 
+
+TRAINING_BUCKET_NAME = "industralfailture"

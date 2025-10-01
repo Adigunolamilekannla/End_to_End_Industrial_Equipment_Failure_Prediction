@@ -9,5 +9,6 @@ dill
 scikit-lean
 pyaml
 mlflow
+awscli
 #-e .
 

@@ -5,14 +5,16 @@ from datetime import datetime
 
 
 class TrainPipelineConfig:
-    def __init__(self,timestamp=datetime.now()):
-        timestamp = timestamp.strftime("%m_%d_%Y_%H_%M_%S") # setting time format we want
+    def __init__(self, timestamp: str = None):
+        # If no timestamp is provided, create one once
+        if timestamp is None:
+            timestamp = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+
         self.pipeline_name = constants.PIPELINE_NAME
         self.artifact_name = constants.ARTIFACTS_NAME
-        self.artifact_dir = os.path.join(self.artifact_name,timestamp)
-        self.timestamp:str = timestamp
-        self.model_dir:str = os.path.join("final_model","model.pkl")
-        self.process_model_dir:str = os.path.join("final_model","process.pkl")
+        self.artifact_dir = os.path.join(self.artifact_name, timestamp)
+        self.timestamp: str = timestamp
+        self.model_dir: str = os.path.join("final_model", "model.pkl")
 
 
 
