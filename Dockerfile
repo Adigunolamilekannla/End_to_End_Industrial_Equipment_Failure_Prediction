@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     build-essential gcc \
     && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir --user -r requirements.txt \
+    && pip install --no-cache-dir -r requirements.txt \
     && apt-get purge -y --auto-remove build-essential gcc \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,11 +24,9 @@ WORKDIR /app
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Copy installed dependencies from builder
-COPY --from=builder /root/.local /root/.local
-
-# Ensure Python path for the user
-ENV PATH=/root/.local/bin:$PATH
+# Copy installed dependencies from builder (system-wide)
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy the rest of the code
 COPY . .
