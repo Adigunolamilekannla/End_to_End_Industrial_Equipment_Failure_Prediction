@@ -33,9 +33,14 @@ ENV PATH=/root/.local/bin:$PATH
 # Copy the rest of the code
 COPY . .
 
-# Change ownership to non-root user
-RUN chown -R appuser:appuser /app
+# Pre-warm heavy imports to reduce cold start (pandas, numpy, scikit-learn, mlflow)
+USER root
+RUN python -c "import pandas; import numpy; import sklearn; import mlflow; import flask" \
+    && chown -R appuser:appuser /app
 USER appuser
+
+# Expose port 5000 (Flask default)
+EXPOSE 5000
 
 # Run the app
 CMD ["python", "app.py"]
