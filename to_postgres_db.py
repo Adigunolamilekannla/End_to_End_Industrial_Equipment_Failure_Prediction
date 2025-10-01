@@ -32,6 +32,7 @@ try:
         fail           INTEGER NOT NULL
     );
     """
+    
     cur.execute(create_table_query)
     print("✅ Table created successfully (if not already).")
 
