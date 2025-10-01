@@ -10,6 +10,7 @@ COPY requirements.txt .
 # Install build dependencies
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     build-essential gcc \
+    && pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --user -r requirements.txt \
     && apt-get purge -y --auto-remove build-essential gcc \
     && rm -rf /var/lib/apt/lists/*

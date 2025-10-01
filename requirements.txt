@@ -1,15 +1,13 @@
-psycopg2
+psycopg2-binary
 pandas
 numpy
 python-dotenv
-pymango
 certifi
 pymongo[srv]
 dill
-scikit-lean
-pyaml
+scikit-learn
+PyYAML
 mlflow
 awscli
 flask
 #-e .
-
