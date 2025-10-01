@@ -3,4 +3,3 @@ logs
 .env
 Artifacts
 mlruns
-final_model
