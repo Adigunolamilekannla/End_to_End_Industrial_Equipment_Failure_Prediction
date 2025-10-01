@@ -1,9 +1,9 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-slim-bullseye
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first (better for caching layers)
+# Copy requirements first for caching
 COPY requirements.txt .
 
 # Install dependencies
@@ -15,5 +15,5 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 # Copy the rest of the code
 COPY . .
 
-# Run app
+# Run the app
 CMD ["python", "app.py"]
