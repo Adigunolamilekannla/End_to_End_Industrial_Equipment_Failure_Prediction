@@ -5,4 +5,4 @@ COPY . /main
 
 
 RUN apt-get update && pip install -r requirements.txt
-CMD ["python","main.py"]
+CMD ["python","main.py" ]
