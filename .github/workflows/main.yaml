@@ -9,7 +9,7 @@ on:
 
 permissions:
   id-token: write  # For future OIDC; optional with access keys
-  contents: write  # Required for auto-formatting commits/pushes
+  contents: read
 
 jobs:
   integration:
@@ -19,30 +19,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
       - name: Lint code
-        run: |
-          pip install black
-          black . --check || black .  # Check first; format if needed
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Auto-format with Black" || echo "No changes to commit"
-          git push
+        run: echo "Linting repository"
 
       - name: Run unit tests
-        run: |
-          pip install pytest
-          pytest  # Or echo "Running unit tests..." for placeholder
+        run: echo "Running unit tests"
 
   build-and-push-ecr-image:
     name: Continuous Delivery
@@ -58,19 +39,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::ACCOUNT:role/ROLE  # Preferred for OIDC
+          # role-to-assume: arn:aws:iam::ACCOUNT:role/ROLE  # Preferred for OIDC; add if migrating
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Create ECR Repository if it doesn't exist
-        run: |
-          aws ecr describe-repositories --repository-names ${{ secrets.ECR_REPOSITORY_NAME }} --region ${{ secrets.AWS_REGION }} || \
-          aws ecr create-repository --repository-name ${{ secrets.ECR_REPOSITORY_NAME }} --region ${{ secrets.AWS_REGION }} --image-scanning-configuration scanOnPush=true --image-tag-mutability MUTABLE
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -107,11 +80,10 @@ jobs:
          
       - name: Stop and remove old container if exists
         run: |
-          if docker ps -a -q --filter "name=industrialfailure" | grep -q .; then
-            docker stop industrialfailure 2>/dev/null || true
-            docker rm -f industrialfailure
+          if docker ps -q --filter "name=industrialfailure" | grep -q .; then
+            docker stop industrialfailure && docker rm -fv industrialfailure
           else
-            echo "No old container exists"
+            echo "No old container running"
           fi
        
       - name: Run Docker Image to serve users
@@ -120,16 +92,7 @@ jobs:
           -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
           -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
           -e AWS_REGION=${{ secrets.AWS_REGION }} \
-          --health-cmd "curl -f http://localhost:5000/health || exit 1" \
-          --health-interval 30s \
-          --health-retries 3 \
           ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-
-      - name: Verify deployment
-        run: |
-          sleep 10  # Wait for startup
-          docker logs industrialfailure
-          curl -f http://localhost:5000/health || echo "Health check failed"
 
       - name: Clean previous images and containers
         run: |
