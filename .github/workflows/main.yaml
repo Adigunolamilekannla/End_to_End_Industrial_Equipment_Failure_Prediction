@@ -9,7 +9,7 @@ on:
 
 permissions:
   id-token: write  # For future OIDC; optional with access keys
-  contents: read
+  contents: write  # Required for auto-formatting commits/pushes
 
 jobs:
   integration:
@@ -31,8 +31,13 @@ jobs:
 
       - name: Lint code
         run: |
-          pip install black flake8
-          black . --check  # Or echo "Linting..." for placeholder
+          pip install black
+          black . --check || black .  # Check first; format if needed
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-format with Black" || echo "No changes to commit"
+          git push
 
       - name: Run unit tests
         run: |
