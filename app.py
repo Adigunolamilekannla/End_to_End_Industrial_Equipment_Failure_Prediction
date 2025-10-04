@@ -17,6 +17,7 @@ model_training_config = ModelTrainerConfig(
 trained_model_path = model_training_config.trained_model_dir
 
 # --- Load model at startup ---
+
 rf_model = load_object(trained_model_path)
 
 app = Flask(__name__)
